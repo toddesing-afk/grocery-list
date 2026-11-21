@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cart versions</title>
+  <link rel="icon" href="../v1/icons/icon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: light; --bg: #f3efe6; --text: #1d1a16; --muted: #5c564c; --card: #fffdf9; --accent: #1e4d3c; --line: #e6dfd3; }
+    @media (prefers-color-scheme: dark) {
+      :root { color-scheme: dark; --bg: #111411; --text: #f4f1ea; --muted: #c8c1b4; --card: #1c221d; --accent: #8fd0ad; --line: #31382f; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.45; }
+    main { max-width: 32rem; margin: 0 auto; padding: 28px 16px 48px; }
+    a { color: var(--accent); font-weight: 700; }
+    h1 { margin: 12px 0 8px; letter-spacing: -0.03em; }
+    p { color: var(--muted); }
+    ul { list-style: none; padding: 0; margin: 20px 0; }
+    li { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; }
+    li a { font-size: 1.15rem; }
+    .note { display: block; margin-top: 4px; color: var(--muted); font-weight: 400; }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="../">Home</a></p>
+    <h1>Cart versions</h1>
+    <p>The home page opens the latest version. Older ones stay here.</p>
+    <!-- Copy a list item when you add v2, v3, and so on. -->
+    <ul>
+      <li>
+        <a href="../v1/">Version 1</a>
+        <span class="note">Current. Aisles, frequent items, and running-low nudges.</span>
+      </li>
+    </ul>
+  </main>
+</body>
+</html>
