@@ -1,0 +1,52 @@
+# Publishes this repo to GitHub Pages on every push to main.
+# The site root redirects to the latest version. v1, v2, and so on
+# are copied automatically from folders named v1, v2, v3...
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Collect the website
+        run: |
+          shopt -s nullglob
+          mkdir -p _site
+          cp .nojekyll index.html _site/
+          cp -R versions _site/
+          for dir in v[0-9]*; do
+            if [ -d "$dir" ]; then
+              cp -R "$dir" "_site/$dir"
+            fi
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
