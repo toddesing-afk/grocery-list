@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cart</title>
+  <meta name="description" content="A grocery list that remembers aisles and what you buy often.">
+  <meta name="theme-color" content="#7f2d12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cart">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      var choice = "system";
+      try { choice = localStorage.getItem("cart.v1.theme") || "system"; } catch (e) {}
+      var dark = choice === "dark" || (choice !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", dark ? "#1a0e09" : "#7f2d12");
+    })();
+  </script>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="title-row">
+        <div>
+          <p class="eyebrow">Grocery list</p>
+          <h1>Cart</h1>
+        </div>
+        <button type="button" class="theme-btn" id="theme-toggle" aria-label="Switch color mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path fill="currentColor" d="M14.5 3.2a8.2 8.2 0 1 0 6.4 12.6A7.1 7.1 0 0 1 14.5 3.2z"/>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+            <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+      <p id="remaining" class="remaining">Nothing to get yet</p>
+      <div class="composer">
+        <form id="add-form" autocomplete="off">
+          <label class="sr-only" for="add-input">Add an item</label>
+          <input id="add-input" name="item" type="text" maxlength="80" placeholder="Add an item" enterkeyhint="done" autocapitalize="sentences" autocomplete="off" spellcheck="true" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false">
+          <button type="submit" class="add-btn">Add</button>
+        </form>
+        <div id="suggestions" class="suggestions" role="listbox" hidden></div>
+      </div>
+    </header>
+
+    <p id="save-warning" class="warning" hidden>This browser isn't keeping the list. It will disappear if you close the tab.</p>
+    <div id="tip" class="tip" hidden>
+      <p>Add Cart to your home screen to open it full screen.</p>
+      <button type="button" id="tip-dismiss">OK</button>
+    </div>
+    <noscript><p class="warning">Turn on JavaScript to use Cart. The list stays on this phone.</p></noscript>
+    <main id="main"></main>
+    <footer class="foot">
+      <p><span class="ver">v2</span> Import link for your Alexa list, plus warm red/orange/brown colors.</p>
+      <p><a href="../versions/">All versions</a></p>
+    </footer>
+  </div>
+
+  <dialog id="editor" aria-labelledby="editor-heading">
+    <form class="sheet" id="editor-form">
+      <div class="grab" aria-hidden="true"></div>
+      <h2 id="editor-heading">Edit item</h2>
+      <label for="edit-name">Name</label>
+      <input id="edit-name" type="text" maxlength="80" autocomplete="off" enterkeyhint="done">
+      <p class="field-label" id="qty-label">Quantity</p>
+      <div class="stepper" role="group" aria-labelledby="qty-label">
+        <button type="button" id="qty-dec" aria-label="Decrease quantity">−</button>
+        <input id="qty-val" type="number" min="1" max="99" inputmode="numeric" aria-label="Quantity" value="1">
+        <button type="button" id="qty-inc" aria-label="Increase quantity">+</button>
+      </div>
+      <label for="edit-note">Note</label>
+      <input id="edit-note" type="text" maxlength="140" placeholder="Optional, like 2% or the big bag" autocomplete="off">
+      <div class="sheet-actions">
+        <button type="button" class="danger" id="edit-delete">Delete</button>
+        <button type="submit" class="primary" id="edit-done">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="aisle-dialog" aria-labelledby="aisle-heading">
+    <div class="sheet">
+      <div class="grab" aria-hidden="true"></div>
+      <h2 id="aisle-heading">Which aisle?</h2>
+      <p id="aisle-for" class="aisle-for"></p>
+      <p class="remember">Cart remembers this the next time you add the same item.</p>
+      <div id="aisle-options" class="aisle-options"></div>
+      <button type="button" class="ghost wide" id="aisle-cancel">Cancel</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+  <script src="dictionary.js"></script>
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

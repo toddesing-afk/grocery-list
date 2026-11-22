@@ -10,7 +10,11 @@ After this is published, the address is:
 
 <https://toddesing-afk.github.io/grocery-list/>
 
-That opens the latest version. Version 1 itself lives at:
+That opens the latest version. Version 2 lives at:
+
+<https://toddesing-afk.github.io/grocery-list/v2/>
+
+Version 1 stays at:
 
 <https://toddesing-afk.github.io/grocery-list/v1/>
 
@@ -28,7 +32,13 @@ From this folder:
 python3 -m http.server 8765
 ```
 
-Then open <http://localhost:8765/v1/>.
+Then open <http://localhost:8765/v2/>.
+
+## Version 2
+
+Open a link whose hash looks like `#add=milk|eggs|paper%20towels`. Cart adds each item that is not already an unchecked line on the list, sorts it into an aisle, and shows a short note such as "Added 2 items from Alexa (1 already on your list)". The hash is removed so a refresh does not add them again. The list is the same one version 1 saved on this phone.
+
+Light mode is cream and brown with red-orange accents. Dark mode is deep brown and tan with orange and yellow accents. The footer says `v2`.
 
 ## Version 1
 
