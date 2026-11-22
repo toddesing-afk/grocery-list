@@ -241,7 +241,7 @@ var undone = logic.undoPurchase(recorded.entry, recorded.token);
 eq(undone.count, 0, "uncheck removes the purchase");
 eq(undone.purchases.length, 0, "uncheck removes the timestamp");
 
-["v1/index.html", "v1/styles.css", "v1/app.js", "v1/sw.js", "v1/manifest.json", "index.html", "versions/index.html"].forEach(function (file) {
+["v1/index.html", "v1/styles.css", "v1/app.js", "v1/sw.js", "v1/manifest.json", "v2/index.html", "v2/styles.css", "v2/app.js", "v2/sw.js", "v2/manifest.json", "index.html", "versions/index.html"].forEach(function (file) {
   var text = fs.readFileSync(path.join(root, file), "utf8");
   assert(!/wegmans/i.test(text), file + " stays brand neutral");
   assert(!/(?:href|src|action)\s*=\s*["']\//.test(text), file + " uses relative links");
@@ -258,6 +258,31 @@ eq(manifest.scope, "./", "manifest scope stays inside this version");
 ["v1/icons/icon.svg", "v1/icons/icon-192.png", "v1/icons/icon-512.png", "v1/icons/icon-maskable-512.png", "v1/icons/apple-touch-icon.png"].forEach(function (file) {
   assert(fs.existsSync(path.join(root, file)), file + " exists");
 });
+
+var sw2 = fs.readFileSync(path.join(root, "v2/sw.js"), "utf8");
+assert(sw2.indexOf("cart-v2-") !== -1, "v2 cache name starts with cart-v2-");
+assert(sw2.indexOf("cart-v1-") === -1, "v2 worker does not use a v1 cache name");
+assert(!/caches\.delete\([^)]*cart-v1/.test(sw2), "v2 does not delete the v1 cache");
+var app2 = fs.readFileSync(path.join(root, "v2/app.js"), "utf8");
+assert(app2.indexOf('var STORAGE_KEY = "cart.v1"') !== -1, "v2 keeps the v1 list key");
+assert(app2.indexOf('var THEME_KEY = "cart.v1.theme"') !== -1, "v2 keeps the v1 theme key");
+assert(app2.indexOf("history.replaceState") !== -1, "v2 clears the import hash");
+assert(app2.indexOf("from Alexa") !== -1, "v2 import toast names Alexa");
+var home = fs.readFileSync(path.join(root, "index.html"), "utf8");
+assert(home.indexOf('location.replace("v2/" + location.hash)') !== -1, "home redirect keeps the hash");
+assert(home.indexOf("v1/") === -1, "home no longer sends people to v1");
+var versions = fs.readFileSync(path.join(root, "versions/index.html"), "utf8");
+assert(versions.indexOf("v2: import link for your Alexa list, plus warm red/orange/brown colors") !== -1, "versions page has the v2 changelog");
+assert(versions.indexOf("../v1/") !== -1, "versions page still lists v1");
+assert(versions.indexOf("../v2/") !== -1, "versions page lists v2");
+var page2 = fs.readFileSync(path.join(root, "v2/index.html"), "utf8");
+assert(page2.indexOf(">v2<") !== -1, "v2 footer says v2");
+assert(page2.indexOf("Import link for your Alexa list, plus warm red/orange/brown colors") !== -1, "v2 footer changelog");
+var manifest2 = JSON.parse(fs.readFileSync(path.join(root, "v2/manifest.json"), "utf8"));
+eq(manifest2.theme_color, "#7f2d12", "v2 manifest theme color");
+eq(manifest2.background_color, "#f4ead8", "v2 manifest background");
+eq(manifest2.scope, "./", "v2 manifest scope stays inside this version");
+eq(manifest2.start_url, "./", "v2 manifest start url is relative");
 
 if (failed) {
   console.error(failed + " failed");
